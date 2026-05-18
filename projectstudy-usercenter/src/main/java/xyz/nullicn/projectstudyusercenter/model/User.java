@@ -1,4 +1,4 @@
-package generator.domain;
+package xyz.nullicn.projectstudyusercenter.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

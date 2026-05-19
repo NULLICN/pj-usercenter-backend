@@ -38,7 +38,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             return -1;
         }
 
-        // 检查字符串中是否包含至少一个非字母数字的符号
+        // 仅通行纯字母数字密码，否则错误
         boolean containsSpecial = ReUtil.contains("[^a-zA-Z0-9]", userPassword);
         if(containsSpecial) return -1;
 
@@ -63,7 +63,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
 
         return newUser.getId();
-        // 2:18:00
+        // 续集：下
     }
 }
 

@@ -16,23 +16,23 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: false
 
-logging:
-  level:
-    root: INFO
-    # Spring Framework 相关
-    org.springframework: WARN
-    org.springframework.boot: WARN
-    org.springframework.boot.actuate: WARN
-    org.springframework.web: WARN
-    org.springframework.security: WARN
-    org.springframework.test: WARN
-    # MyBatis 相关
-    org.mybatis: WARN
-    org.mybatis.spring: WARN
-    # 其他第三方库
-    com.baomidou: WARN
-    org.apache: WARN
-    org.mysql: WARN
-    # 只保留自己项目的日志
-    xyz.nullicn.projectstudyusercenter: DEBUG
+#logging:
+#  level:
+#    root: INFO
+#    # Spring Framework 相关
+#    org.springframework: WARN
+#    org.springframework.boot: WARN
+#    org.springframework.boot.actuate: WARN
+#    org.springframework.web: WARN
+#    org.springframework.security: WARN
+#    org.springframework.test: WARN
+#    # MyBatis 相关
+#    org.mybatis: WARN
+#    org.mybatis.spring: WARN
+#    # 其他第三方库
+#    com.baomidou: WARN
+#    org.apache: WARN
+#    org.mysql: WARN
+#    # 只保留自己项目的日志
+#    xyz.nullicn.projectstudyusercenter: DEBUG
 

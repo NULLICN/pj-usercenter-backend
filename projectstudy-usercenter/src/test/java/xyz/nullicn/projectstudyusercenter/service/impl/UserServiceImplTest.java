@@ -1,18 +1,14 @@
 package xyz.nullicn.projectstudyusercenter.service.impl;
-import java.util.Date;
 import java.util.List;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import xyz.nullicn.projectstudyusercenter.mapper.UserMapper;
-import xyz.nullicn.projectstudyusercenter.model.User;
+import xyz.nullicn.projectstudyusercenter.model.domain.User;
 import xyz.nullicn.projectstudyusercenter.service.UserService;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class UserServiceImplTest {

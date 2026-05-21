@@ -1,6 +1,7 @@
 package xyz.nullicn.projectstudyusercenter.service;
 
-import xyz.nullicn.projectstudyusercenter.model.User;
+import jakarta.servlet.http.HttpServletRequest;
+import xyz.nullicn.projectstudyusercenter.model.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -18,4 +19,6 @@ public interface UserService extends IService<User> {
      * @return 新用户id
      */
     long userRegister(String userAccount, String userPassword, String checkPassword);
+
+    User userdoLogin(String userAccount, String userPassword, HttpServletRequest request);
 }

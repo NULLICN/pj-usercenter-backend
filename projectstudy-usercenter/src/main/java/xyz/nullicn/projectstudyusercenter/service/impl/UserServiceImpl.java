@@ -2,12 +2,12 @@ package xyz.nullicn.projectstudyusercenter.service.impl;
 
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.digest.BCrypt;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import xyz.nullicn.projectstudyusercenter.model.User;
+import xyz.nullicn.projectstudyusercenter.model.domain.User;
 import xyz.nullicn.projectstudyusercenter.service.UserService;
 import xyz.nullicn.projectstudyusercenter.mapper.UserMapper;
 import org.springframework.stereotype.Service;
@@ -19,11 +19,14 @@ import xyz.nullicn.projectstudyusercenter.utils.PasswordUtil;
 * @createDate 2026-05-17 22:59:01
 */
 @Service
+@Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService{
 
     @Autowired
     UserMapper userMapper;
+
+    public static final String USER_LOGIN_STATE = "userLoginState";
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
@@ -63,10 +66,52 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
 
         return newUser.getId();
-        // 续集：下
+
+    }
+
+    @Override
+    public User userdoLogin(String userAccount, String userPassword, HttpServletRequest request) {
+        // 校验
+        if(StrUtil.hasBlank(userAccount, userPassword)) {
+            return null;
+        }
+        if(userAccount.length() < 4) {
+            return null;
+        }
+        if(userPassword.length() < 8) {
+            return null;
+        }
+
+        // 仅通行纯字母数字密码，否则错误
+        boolean containsSpecial = ReUtil.contains("[^a-zA-Z0-9]", userPassword);
+        if(containsSpecial) return null;
+
+        // 加密
+        String encryptedPassword = PasswordUtil.hashPassword(userPassword);
+
+        // 账户
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("userAccount", userAccount);
+        queryWrapper.eq("userPassword", encryptedPassword);
+        User user = userMapper.selectOne(queryWrapper);
+        log.info(user.getUserPassword() + " ?== " + encryptedPassword);
+        if(user == null) {
+            return null;
+        }
+
+        // 用户脱敏
+        User safetyUser = new User();
+        // 排除所有不需要的字段（剩下9个字段被拷贝）
+        cn.hutool.core.bean.BeanUtil.copyProperties(user, safetyUser,
+                "userPassword", "isDelete", "updateTime", "userRole", "planetCode");
+
+        // 用户登陆态
+        request.getSession().setAttribute(USER_LOGIN_STATE, safetyUser);
+
+        return safetyUser;
     }
 }
-
+// 下 30：00
 
 
 

@@ -54,7 +54,7 @@ class UserServiceImplTest {
     @Test
     void testRegister() {
         // Test successful registration with valid password (alphanumeric only)
-        long result = userService.userRegister("testUser2", "pass", "pass");
+        long result = userService.userRegister("testUser2", "12345678", "12345678");
         System.out.println("result: " + result);
         // Should return a positive user ID (>= 0) for successful registration
         Assertions.assertTrue(result > 0 || result == -1);

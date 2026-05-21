@@ -13,6 +13,8 @@ import xyz.nullicn.projectstudyusercenter.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 import xyz.nullicn.projectstudyusercenter.utils.PasswordUtil;
 
+import static xyz.nullicn.projectstudyusercenter.constant.UserConstant.USER_LOGIN_STATE;
+
 /**
 * @author Administrator
 * @description 针对表【user(用户)】的数据库操作Service实现
@@ -25,8 +27,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Autowired
     UserMapper userMapper;
-
-    public static final String USER_LOGIN_STATE = "userLoginState";
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
@@ -87,15 +87,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if(containsSpecial) return null;
 
         // 加密
-        String encryptedPassword = PasswordUtil.hashPassword(userPassword);
+//        String encryptedPassword = PasswordUtil.hashPassword(userPassword);
 
         // 账户
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userAccount", userAccount);
-        queryWrapper.eq("userPassword", encryptedPassword);
+//        queryWrapper.eq("userPassword", encryptedPassword);
         User user = userMapper.selectOne(queryWrapper);
-        log.info(user.getUserPassword() + " ?== " + encryptedPassword);
+//        log.info(user.getUserPassword() + " ?== " + encryptedPassword);
         if(user == null) {
+            return null;
+        }
+
+        // 使用 BCrypt 校验密码
+        boolean passwordMatch = PasswordUtil.checkPassword(userPassword, user.getUserPassword());
+        if(!passwordMatch) {
             return null;
         }
 
@@ -103,10 +109,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         User safetyUser = new User();
         // 排除所有不需要的字段（剩下9个字段被拷贝）
         cn.hutool.core.bean.BeanUtil.copyProperties(user, safetyUser,
-                "userPassword", "isDelete", "updateTime", "userRole", "planetCode");
+                "userPassword", "isDelete", "updateTime", "planetCode");
 
         // 用户登陆态
         request.getSession().setAttribute(USER_LOGIN_STATE, safetyUser);
+        User getFromSession = (User) request.getSession().getAttribute(USER_LOGIN_STATE);
 
         return safetyUser;
     }
